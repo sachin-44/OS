@@ -31,3 +31,4 @@ int main()
 		wait(NULL);
 	}
 }
+		
