@@ -1,0 +1,110 @@
+#include<stdio.h>
+
+struct process{
+    int id,at,bt,ct,wt;
+}p[10];
+
+void read(int n)
+{
+    printf("ID AT BT\n");
+    for(int i=0;i<n;i++)
+    {
+        scanf("%d%d%d",&p[i].id,&p[i].at,&p[i].bt);
+    }
+}
+
+void FCFS(int n)
+{
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n-i-1;j++)
+        {
+            if(p[j].at>p[j+1].at)
+            {
+                struct process p1=p[j];
+                p[j]=p[j+1];
+                p[j+1]=p1;
+            }
+        }
+    }
+    int tbt;
+    printf("|");
+    for(int i=0;i<n;i++)
+    {
+        printf("\tp%d\t|",p[i].id);
+    }
+    printf("\n");
+    p[0].ct=p[0].bt+p[0].at;
+    tbt=p[0].bt;
+    for(int i=1;i<n;i++)
+    {
+        if(p[i-1].ct>p[i].at)
+        {
+            p[i].wt=tbt-p[i].at;
+            p[i].ct=p[i].at+p[i].wt+p[i].bt;
+            tbt+=p[i].bt;
+        }
+        else
+        {
+            p[i].wt=0;
+            p[i].ct=p[i].at+p[i].bt;
+            tbt+=p[i].bt+(p[i-1].ct-p[i].at);
+        }
+    }
+    printf("%d\t\t",p[0].at);
+    for(int i=0;i<n;i++)
+    {
+        printf("%d\t\t",p[i].ct);
+    }
+}
+
+void SJF(int n)
+{
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n-i-1;j++)
+        {
+            if(p[j].bt>p[j+1].bt)
+            {
+                struct process p1=p[j];
+                p[j]=p[j+1];
+                p[j+1]=p1;
+            }
+        }
+    }
+    int tbt;
+    printf("|");
+    for(int i=0;i<n;i++)
+    {
+        printf("\tp%d\t|",p[i].id);
+    }
+    printf("\n");
+    p[0].ct=p[0].bt+p[0].at;
+    tbt=p[0].bt;
+    for(int i=1;i<n;i++)
+    {
+        p[i].wt=tbt;
+        p[i].ct=p[i-1].ct+p[i].bt;
+        tbt+=p[i].bt;
+    }
+    printf("%d\t\t",p[0].at);
+    for(int i=0;i<n;i++)
+    {
+        printf("%d\t\t",p[i].ct);
+    }
+}
+
+int main()
+{
+    int n;
+    printf("Enter the no. of process: ");
+    scanf("%d",&n);
+    read(n);
+     printf("FCFS:\n\n");
+    FCFS(n);
+    printf("\n");
+    printf("SJF:\n\n");
+    SJF(n);
+    printf("\n");
+    
+}
