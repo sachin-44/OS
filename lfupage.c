@@ -1,61 +1,60 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
 
-#define F_SIZE 3
-
-typedef struct {
-    int pageno;
-    int freq;
-} page;
-
-int pages[100];
-
-int findIdx(page arr[], int n, int target)
-{
-    for(int i = 0; i < n; i++)
-    {
-        if(arr[i].pageno == target)
-        {
-            return i;
+void main() {
+    int f, p, pages[50], frame[10], hit = 0, count[50], time[50];
+    int i, j, flag, least, mintime, temp;
+    
+    printf("Enter the number of frames: ");
+    scanf("%d", &f);
+    
+    printf("Enter the number of pages: ");
+    scanf("%d", &p);
+    
+    for (i = 0; i < f; i++) {
+        frame[i] = -1;
+    }
+    
+    for (i = 0; i < 50; i++) {
+        count[i] = 0;
+    }
+    
+    printf("Enter the reference page string: ");
+    for (i = 0; i < p; i++) {
+        scanf("%d", &pages[i]);
+    }
+    
+    for (i = 0; i < p; i++) {
+        count[pages[i]]++;
+        time[pages[i]] = i;
+        flag = 1;
+        least = frame[0];
+        
+        for (j = 0; j < f; j++) {
+            if (frame[j] == -1 || frame[j] == pages[i]) {
+                if (frame[j] != -1) {
+                    hit++;
+                }
+                flag = 0;
+                frame[j] = pages[i];
+                break;
+            }
+            if (count[frame[j]] < count[least]) {
+                least = frame[j];
+            }
         }
-    }
-    return -1;
-}
-
-void lfu(int n)
-{
-    page memory[F_SIZE];
-    int pgflt = 0;
-
-    for(int i = 0; i < F_SIZE; i++)
-    {
-        memory[i].pageno = -1;
-        memory[i].freq = 0;
-    }
-
-    for(int i = 0; i < n; i++)
-    {
-        int page = pages[i];
-        int index = findIdx(memory, F_SIZE, page);
-
-        if(index == -1)
-        {
-            pgflt++;
-            int minIdx = 0;
-            for(int j = 1; j < F_SIZE; j++)
-            {
-                if(memory[j].freq < memory[minIdx].freq)
-                {
-                    minIdx = j;
+        
+        if (flag) {
+            mintime = 50;
+            for (j = 0; j < f; j++) {
+                if (count[frame[j]] == count[least] && time[frame[j]] < mintime) {
+                    temp = j;
+                    mintime = time[frame[j]];
                 }
             }
-            memory[minIdx].pageno = page;
-            memory[minIdx].freq = 1;
-        }
-        else
-        {
-            memory[index].freq++;
+            count[frame[temp]]--;
+            frame[temp] = pages[i];
         }
     }
-    printf("Page Faults in LFU : %d\n", pgflt);
+    
+    printf("\nTotal Page fault: %d\n", p - hit);
 }
