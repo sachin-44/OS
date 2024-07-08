@@ -1,25 +1,42 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
 
-#define F_SIZE 3
-
-int pages[100];
-
-void FIFO(int n)
-{
-    int memory[F_SIZE] = {-1, -1, -1};
-    int pgflt = 0;
-    int current = 0;
-
-    for(int i = 0; i < n; i++)
-    {
-        int page = pages[i];
-        if(findIndex(memory, F_SIZE, page) == -1)
-        {
-            pgflt++;
-            memory[current] = page;
-            current = (current + 1) % F_SIZE;
+int main() {
+    int n, rs[30], f, pf = 0, m[10], count = 0;
+    
+    printf("\nEnter the length of page string: ");
+    scanf("%d", &n);
+    
+    printf("Enter the reference page string: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &rs[i]);
+    }
+    
+    printf("Enter the number of frames: ");
+    scanf("%d", &f);
+    
+    for (int i = 0; i < f; i++) {
+        m[i] = -1; // initializing all frames with -1
+    }
+    
+    for (int i = 0; i < n; i++) {
+        int k;
+        for (k = 0; k < f; k++) {
+            if (m[k] == rs[i]) { // checking for hit
+                break;
+            }
+        }
+        
+        if (k == f) { // condition for page fault
+            m[count++] = rs[i];
+            pf++;
+        }
+        
+        if (count == f) {
+            count = 0;
         }
     }
-    printf("Page Faults in FIFO : %d\n", pgflt);
+    
+    printf("\nThe number of Page faults: %d\n", pf);
+    
+    return 0;
 }
