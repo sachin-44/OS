@@ -1,36 +1,53 @@
 #include<stdio.h>
-#include<stdlib.h>
 
-#define F_SIZE 3
+int n, rs[30], f, m[10], count = 0, pf = 0, least[10], flag, temp, pos, i, j, k;
 
-int pages[100];
-
-void lru(int n)
-{
-    int memory[F_SIZE] = {-1, -1, -1};
-    int pgflt = 0;
-    int lru = 0;
-
+void main() {
+    printf("\nEnter the length of the page string:");
+    scanf("%d", &n);
+    printf("\nEnter the reference page string:");
     for(int i = 0; i < n; i++)
-    {
-        int page = pages[i];
-        int index = findIndex(memory, F_SIZE, page);
+        scanf("%d", &rs[i]);
+    printf("\nEnter the number of frames:");
+    scanf("%d", &f);
 
-        if(index == -1)
-        {
-            pgflt++;
-            memory[lru] = page;
-            lru = (lru + 1) % F_SIZE;
-        }
-        else
-        {
-            // Move the recently used page to the end of the list
-            for(int j = index; j < F_SIZE - 1; j++)
-            {
-                memory[j] = memory[j + 1];
+    for(int i = 0; i < f; i++) //Initialising all frames with -1
+        m[i] = -1;  
+
+    for(i = 0; i < n; i++) {
+        flag = 0;
+        for(j = 0; j < f; j++) {
+            if(m[j] == rs[i]) { //hit
+                flag = 1;
+                break;
             }
-            memory[F_SIZE - 1] = page;
+        }
+        if(flag == 0) { //page fault
+            if(count < f) {
+                m[count++] = rs[i];
+                pf++; //fill available frames
+            }
+            else {
+                for(j = 0; j < f; j++) {
+                    least[j] = 0;
+                    for(k = i - 1; k >= 0; k--) {
+                        if(m[j] == rs[k]) {
+                            least[j] = i - k;
+                            break;
+                        }
+                    }
+                }
+                pos = 0;
+                for(j = 1; j < f; j++) {
+                    if(least[j] > least[pos]) {
+                        pos = j; //least recently used or with most age among the frames
+                    }
+                }
+                m[pos] = rs[i]; //allocating page to frame by overwriting the least recently used page
+                pf++;
+            }
         }
     }
-    printf("Page Faults in LRU : %d\n", pgflt);
+
+    printf("\nThe number of page faults: %d\n", pf);
 }
