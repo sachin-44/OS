@@ -18,7 +18,6 @@ void read(int n){
 void FCFS(int n)
 {
     float tbt=0,twt=0,ttat=0;
-    int current=0;
     for(int i=0;i<n;i++)
     {
         for(int j=0;j<n-i-1;j++)
